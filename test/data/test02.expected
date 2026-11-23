@@ -1,0 +1,28 @@
+Error: unknown command 'fly'
+Error: cannot load collection from 'build/no-such-file.data'
+Error: usage: load [file]
+Error: usage: save [file]
+Error: cannot save collection to 'no-such-dir/x.data'
+Error: usage: clean
+Error: usage: view
+Error: usage: add <board_no> <type> <size> <x> <y> <z>
+Error: unknown aircraft type 'airship'
+Error: unknown aircraft size 'tiny'
+Error: bad coordinates
+Error: height must be non-negative
+Error: board number is longer than 16 characters
+Added [0]
+Error: usage: remove <index>
+Error: bad index '5'
+Error: bad index '-1'
+Error: bad index 'abc'
+Removed [0]
+Error: item [0] is removed
+Error: item [0] is removed
+Error: usage: update <index> <board_no> <type> <size> <x> <y> <z>
+Added [1]
+Error: unknown aircraft size 'tiny'
+[1] RA-002 cargo small (1, 1, 1)
+Total: 1
+Error: cannot load collection from 'test/data/broken.data'
+Total: 0

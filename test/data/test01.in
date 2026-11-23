@@ -1,0 +1,18 @@
+view
+add RA-001 passenger small 10 20 300
+add RA-002 cargo medium -5.5 40 1200
+add RF-100 military large 0 0 5000
+view
+update 1 RA-022 cargo small 1 2 3
+remove 0
+view
+save build/test01.data
+clean
+view
+load build/test01.data
+view
+add RA-003 passenger large 7 8 9
+
+save build/test01.data
+load build/test01.data
+view

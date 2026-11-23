@@ -1,0 +1,27 @@
+fly
+load build/no-such-file.data
+load a b
+save a b
+save no-such-dir/x.data
+clean extra
+view extra
+add RA-001
+add RA-001 airship small 1 2 3
+add RA-001 passenger tiny 1 2 3
+add RA-001 passenger small 1 x 3
+add RA-001 passenger small 1 2 -3
+add RA-001-TOO-LONG-NUMBER passenger small 1 2 3
+add RA-001 passenger small 1 2 3
+remove
+remove 5
+remove -1
+remove abc
+remove 0
+remove 0
+update 0 RA-001 passenger small 1 2 3
+update 1
+add RA-002 cargo small 1 1 1
+update 1 RA-002 cargo tiny 1 1 1
+view
+load test/data/broken.data
+view

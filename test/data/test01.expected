@@ -1,0 +1,27 @@
+Total: 0
+Added [0]
+Added [1]
+Added [2]
+[0] RA-001 passenger small (10, 20, 300)
+[1] RA-002 cargo medium (-5.5, 40, 1200)
+[2] RF-100 military large (0, 0, 5000)
+Total: 3
+Updated [1]
+Removed [0]
+[1] RA-022 cargo small (1, 2, 3)
+[2] RF-100 military large (0, 0, 5000)
+Total: 2
+Collection saved to 'build/test01.data'
+Collection cleaned
+Total: 0
+Loaded 2 items from 'build/test01.data'
+[0] RA-022 cargo small (1, 2, 3)
+[1] RF-100 military large (0, 0, 5000)
+Total: 2
+Added [2]
+Collection saved to 'build/test01.data'
+Loaded 3 items from 'build/test01.data'
+[0] RA-022 cargo small (1, 2, 3)
+[1] RF-100 military large (0, 0, 5000)
+[2] RA-003 passenger large (7, 8, 9)
+Total: 3
