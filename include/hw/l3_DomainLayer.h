@@ -9,8 +9,7 @@ enum class ShipType { Passenger, Cargo, Military };
 enum class ShipSize { Large, Medium, Small };
 enum class RequestStatus { Approved, Rejected };
 
-class Ship
-{
+class Ship {
 public:
     Ship(ShipType type, ShipSize size);
     ShipType getType() const;
@@ -21,8 +20,7 @@ private:
     ShipSize _size;
 };
 
-class Request
-{
+class Request {
 public:
     Request(Ship ship, TimePoint request_time, TimePoint response_time,
             RequestStatus status, bool is_emergency);
@@ -40,7 +38,6 @@ private:
     bool _is_emergency;
 };
 
-/// Бизнес-правило допуска к посадке (вынесено из ДЗ в DL)
 bool checkCanLand(const Ship& ship, bool is_emergency);
 
 #endif // HW_L3_DOMAINLAYER_H_

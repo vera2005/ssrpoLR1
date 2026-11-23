@@ -5,16 +5,16 @@
 #include "hw/l4_InfrastructureLayer.h"
 #include <string>
 #include <vector>
+#include <tuple>      // ВАЖНО: для std::tuple
+#include <chrono>     // ВАЖНО: для TimePoint
 
-class IOutput
-{
+class IOutput {
 public:
     virtual ~IOutput() = default;
     virtual void Output(const std::string& s) const = 0;
 };
 
-class Application
-{
+class Application {
 public:
     Application(const IOutput& out, RequestJournal1& journal);
     bool performCommand(const std::vector<std::string>& args);

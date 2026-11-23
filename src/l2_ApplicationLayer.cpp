@@ -7,8 +7,7 @@ namespace { const std::string DEFAULT_FILE = "requests.data"; }
 Application::Application(const IOutput& out, RequestJournal1& journal)
     : _out(out), _journal(journal) {}
 
-bool Application::performCommand(const std::vector<std::string>& args)
-{
+bool Application::performCommand(const std::vector<std::string>& args) {
     assert(!args.empty());
     const std::string& c = args[0];
     if (c == "add")   return add(args);
@@ -20,8 +19,7 @@ bool Application::performCommand(const std::vector<std::string>& args)
     return error("unknown command '" + c + "'");
 }
 
-bool Application::parseShip(const std::string& t, const std::string& s, Ship& ship)
-{
+bool Application::parseShip(const std::string& t, const std::string& s, Ship& ship) {
     ShipType type;
     if (t == "passenger") type = ShipType::Passenger;
     else if (t == "cargo") type = ShipType::Cargo;
@@ -38,13 +36,12 @@ bool Application::parseShip(const std::string& t, const std::string& s, Ship& sh
     return true;
 }
 
-bool Application::add(const std::vector<std::string>& args)
-{
+bool Application::add(const std::vector<std::string>& args) {
     if (args.size() < 3 || args.size() > 4)
         return error("usage: add <type> <size> [emergency]");
     Ship ship;
-    if (!parseShip(args[1], args[2], ship))
-        return false;
+    if (!parseShip(args[1], args[2], ship)) return false;
+    
     const bool emergency = args.size() == 4 && args[3] == "emergency";
     _pending_ships.push_back(ship);
     _pending_emergency.push_back(emergency);
@@ -53,18 +50,13 @@ bool Application::add(const std::vector<std::string>& args)
     return true;
 }
 
-bool Application::work(const std::vector<std::string>& args)
-{
-    if (args.size() != 1)
-        return error("usage: work");
-    for (std::size_t i = 0; i < _pending_ships.size(); ++i)
-    {
+bool Application::work(const std::vector<std::string>& args) {
+    if (args.size() != 1) return error("usage: work");
+    for (std::size_t i = 0; i < _pending_ships.size(); ++i) {
         const TimePoint resp = std::chrono::system_clock::now();
-        const RequestStatus st =
-            checkCanLand(_pending_ships[i], _pending_emergency[i])
-                ? RequestStatus::Approved : RequestStatus::Rejected;
-        _journal.addRequest(Request(_pending_ships[i], _pending_times[i],
-                                    resp, st, _pending_emergency[i]));
+        const RequestStatus st = checkCanLand(_pending_ships[i], _pending_emergency[i])
+            ? RequestStatus::Approved : RequestStatus::Rejected;
+        _journal.addRequest(Request(_pending_ships[i], _pending_times[i], resp, st, _pending_emergency[i]));
     }
     _pending_ships.clear();
     _pending_emergency.clear();
@@ -73,19 +65,15 @@ bool Application::work(const std::vector<std::string>& args)
     return true;
 }
 
-bool Application::view(const std::vector<std::string>& args)
-{
-    if (args.size() != 1)
-        return error("usage: view");
+bool Application::view(const std::vector<std::string>& args) {
+    if (args.size() != 1) return error("usage: view");
     const ReportSystem1 report(_journal);
     _out.Output(report.makeReport());
     return true;
 }
 
-bool Application::clean(const std::vector<std::string>& args)
-{
-    if (args.size() != 1)
-        return error("usage: clean");
+bool Application::clean(const std::vector<std::string>& args) {
+    if (args.size() != 1) return error("usage: clean");
     _journal.clean();
     _pending_ships.clear();
     _pending_emergency.clear();
@@ -94,31 +82,23 @@ bool Application::clean(const std::vector<std::string>& args)
     return true;
 }
 
-bool Application::save(const std::vector<std::string>& args)
-{
-    if (args.size() > 2)
-        return error("usage: save [file]");
+bool Application::save(const std::vector<std::string>& args) {
+    if (args.size() > 2) return error("usage: save [file]");
     const std::string f = args.size() == 2 ? args[1] : DEFAULT_FILE;
-    if (!_journal.saveCollection(f))
-        return error("cannot save to '" + f + "'");
+    if (!_journal.saveCollection(f)) return error("cannot save to '" + f + "'");
     _out.Output("Collection saved to '" + f + "'");
     return true;
 }
 
-bool Application::load(const std::vector<std::string>& args)
-{
-    if (args.size() > 2)
-        return error("usage: load [file]");
+bool Application::load(const std::vector<std::string>& args) {
+    if (args.size() > 2) return error("usage: load [file]");
     const std::string f = args.size() == 2 ? args[1] : DEFAULT_FILE;
-    if (!_journal.loadCollection(f))
-        return error("cannot load from '" + f + "'");
-    _out.Output("Loaded " + std::to_string(_journal.getInfo().size())
-                + " items from '" + f + "'");
+    if (!_journal.loadCollection(f)) return error("cannot load from '" + f + "'");
+    _out.Output("Loaded " + std::to_string(_journal.getInfo().size()) + " items from '" + f + "'");
     return true;
 }
 
-bool Application::error(const std::string& msg)
-{
+bool Application::error(const std::string& msg) {
     _out.Output("Error: " + msg);
     return false;
 }
