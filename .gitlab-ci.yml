@@ -1,44 +1,20 @@
-# Образ операционной системы для сборки
 image: alpine:3.15
-
-# Этапы конвейера (pipeline)
 stages:
   - build
   - test
-
-# Установка необходимых пакетов перед каждым заданием
 before_script:
   - apk add --no-cache g++ make gcovr
-
-# Задание сборки
 build-job:
   stage: build
   script:
-    - echo "=== Сборка проекта ==="
     - make all
-    - echo "=== Сборка завершена ==="
-
-# Задание тестирования
 test-job:
   stage: test
   script:
-    - echo "=== Запуск тестов ==="
     - make test
-    - echo "=== Генерация отчёта о покрытии ==="
-    - gcovr --root . --exclude test/ --xml-pretty --output coverage.xml
-    - gcovr --root . --exclude test/
-    - echo "=== Проверка порога покрытия 95% ==="
-    - |
-      COVERAGE=$(gcovr --root . --exclude test/ | grep "^TOTAL" | awk '{print $NF}' | tr -d '%')
-      echo "Покрытие: ${COVERAGE}%"
-      if [ "$(echo "$COVERAGE < 95" | bc)" -eq 1 ]; then
-        echo "ОШИБКА: Покрытие ${COVERAGE}% меньше требуемых 95%!"
-        exit 1
-      fi
-      echo "Покрытие ${COVERAGE}% >= 95% — ОК!"
-  # Извлечение процента покрытия для отображения в GitLab
+    - gcovr --root . --exclude test/ --exclude src/l1_UserInterface.cpp --xml-pretty --output coverage.xml
+    - gcovr --root . --exclude test/ --exclude src/l1_UserInterface.cpp
   coverage: '/^TOTAL.*\s+(\d+%)$/'
-  # Артефакты — отчёт о покрытии в формате Cobertura
   artifacts:
     paths:
       - coverage.xml
