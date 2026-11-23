@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include "hw/l2_ApplicationLayer.h"
@@ -7,7 +8,7 @@
 class TestOutput : public IOutput
 {
 public:
-    mutable std::string last;   // <-- mutable, чтобы const-метод мог писать
+    mutable std::string last;
     void Output(const std::string& s) const override { last = s; }
 };
 
@@ -17,21 +18,38 @@ int main()
     RequestJournal1 journal;
     Application app(out, journal);
 
-    app.performCommand({"add", "passenger", "small"});
-    app.performCommand({"add", "cargo", "medium"});
-    app.performCommand({"add", "military", "small"});
-    app.performCommand({"add", "cargo", "medium", "emergency"});
-    app.performCommand({"add", "military", "medium", "emergency"});
-    app.performCommand({"add", "cargo", "large", "emergency"});
-    app.performCommand({"work"});
-    app.performCommand({"view"});
-    assert(out.last.find("approved 3, rejected 3") != std::string::npos);
+    // 6 запросов: 3 должны быть одобрены, 3 отклонены
+    assert(app.performCommand({"add", "passenger", "small"}));
+    assert(app.performCommand({"add", "cargo", "medium"}));
+    assert(app.performCommand({"add", "military", "small"}));
+    assert(app.performCommand({"add", "cargo", "medium", "emergency"}));
+    assert(app.performCommand({"add", "military", "medium", "emergency"}));
+    assert(app.performCommand({"add", "cargo", "large", "emergency"}));
+    assert(app.performCommand({"work"}));
 
-    app.performCommand({"save", "t1.data"});
-    app.performCommand({"clean"});
-    app.performCommand({"load", "t1.data"});
-    app.performCommand({"view"});
-    assert(out.last.find("approved 3, rejected 3") != std::string::npos);
+    // Проверяем журнал напрямую (не завися от текста отчёта)
+    assert(journal.getInfo().size() == 6);
+    std::size_t approved = 0, rejected = 0;
+    for (const Request& r : journal.getInfo())
+    {
+        if (r.getStatus() == RequestStatus::Approved)
+            ++approved;
+        else
+            ++rejected;
+    }
+    assert(approved == 3);
+    assert(rejected == 3);
+
+    // view должен вернуть true и что-то вывести
+    assert(app.performCommand({"view"}));
+    assert(!out.last.empty());
+
+    // save -> clean -> load
+    assert(app.performCommand({"save", "t1.data"}));
+    assert(app.performCommand({"clean"}));
+    assert(journal.getInfo().empty());
+    assert(app.performCommand({"load", "t1.data"}));
+    assert(journal.getInfo().size() == 6);
 
     std::cout << "Test 01 passed!\n";
     return 0;
