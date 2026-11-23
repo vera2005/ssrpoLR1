@@ -43,24 +43,20 @@ bool Application::add(const std::vector<std::string>& args) {
     if (!parseShip(args[1], args[2], ship)) return false;
     
     const bool emergency = args.size() == 4 && args[3] == "emergency";
-    _pending_ships.push_back(ship);
-    _pending_emergency.push_back(emergency);
-    _pending_times.push_back(std::chrono::system_clock::now());
+    _pending.push_back({ship, emergency, std::chrono::system_clock::now()});
     _out.Output("Request registered");
     return true;
 }
 
 bool Application::work(const std::vector<std::string>& args) {
     if (args.size() != 1) return error("usage: work");
-    for (std::size_t i = 0; i < _pending_ships.size(); ++i) {
+    for (const auto& p : _pending) {
         const TimePoint resp = std::chrono::system_clock::now();
-        const RequestStatus st = checkCanLand(_pending_ships[i], _pending_emergency[i])
+        const RequestStatus st = checkCanLand(p.ship, p.is_emergency)
             ? RequestStatus::Approved : RequestStatus::Rejected;
-        _journal.addRequest(Request(_pending_ships[i], _pending_times[i], resp, st, _pending_emergency[i]));
+        _journal.addRequest(Request(p.ship, p.request_time, resp, st, p.is_emergency));
     }
-    _pending_ships.clear();
-    _pending_emergency.clear();
-    _pending_times.clear();
+    _pending.clear();
     _out.Output("Requests processed");
     return true;
 }
@@ -75,9 +71,7 @@ bool Application::view(const std::vector<std::string>& args) {
 bool Application::clean(const std::vector<std::string>& args) {
     if (args.size() != 1) return error("usage: clean");
     _journal.clean();
-    _pending_ships.clear();
-    _pending_emergency.clear();
-    _pending_times.clear();
+    _pending.clear();
     _out.Output("Collection cleaned");
     return true;
 }

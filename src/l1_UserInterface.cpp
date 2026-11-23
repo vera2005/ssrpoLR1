@@ -24,8 +24,8 @@ std::vector<std::string> split(const std::string& line) {
 
 int main() {
     ConsoleOutput out;
-    RequestJournal1 journal; // <-- ЗДЕСЬ БЫЛО ItemCollector, ИСПРАВЛЕНО
-    Application app(out, journal); // <-- ЗДЕСЬ БЫЛО несовместимо, ИСПРАВЛЕНО
+    RequestJournal1 journal;
+    Application app(out, journal);
     
     std::string line;
     while (std::getline(std::cin, line)) {

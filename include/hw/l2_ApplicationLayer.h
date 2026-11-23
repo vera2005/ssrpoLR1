@@ -5,8 +5,6 @@
 #include "hw/l4_InfrastructureLayer.h"
 #include <string>
 #include <vector>
-#include <tuple>      // ВАЖНО: для std::tuple
-#include <chrono>     // ВАЖНО: для TimePoint
 
 class IOutput {
 public:
@@ -30,9 +28,13 @@ private:
 
     const IOutput& _out;
     RequestJournal1& _journal;
-    std::vector<Ship> _pending_ships;
-    std::vector<bool> _pending_emergency;
-    std::vector<TimePoint> _pending_times;
+    
+    struct PendingRequest {
+        Ship ship;
+        bool is_emergency;
+        TimePoint request_time;
+    };
+    std::vector<PendingRequest> _pending;
 };
 
 #endif // HW_L2_APPLICATIONLAYER_H_
