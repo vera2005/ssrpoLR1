@@ -14,11 +14,11 @@ public:
     }
 };
 
-std::vector<std::string> split(const std::string& line)
+std::vector<std::string> split(const std::string & line)
 {
     std::vector<std::string> args;
-    std::istringstream is(line);
-    std::string word;
+    std::istringstream       is(line);
+    std::string              word;
     while (is >> word)
         args.push_back(word);
     return args;
@@ -41,7 +41,7 @@ int main()
         
         if (command == "add")
         {
-            if (args.size() != 3)
+            if (args.size() < 3)
             {
                 out.Output("usage: add <type> <size> [emergency]");
                 continue;
