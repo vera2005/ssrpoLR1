@@ -5,6 +5,8 @@
 #include "hw/l4_InfrastructureLayer.h"
 #include <vector>
 #include <string>
+#include <tuple>
+#include <chrono>
 
 class IOutput
 {
@@ -21,7 +23,7 @@ public:
     void work();
     std::string getReport() const;
 private:
-    using PendingRequest = std::tuple<Ship, bool, TimePoint>;
+    using PendingRequest = std::tuple<Ship, bool, std::chrono::system_clock::time_point>;
     bool checkInvariant() const;
     IRequestJournal& _request_journal;
     std::vector<PendingRequest> _pending_requests;
