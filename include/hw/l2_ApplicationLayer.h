@@ -1,32 +1,38 @@
-#ifndef L2_APPLICATIONLAYER_H
-#define L2_APPLICATIONLAYER_H
+#ifndef HW_L2_APPLICATIONLAYER_H_
+#define HW_L2_APPLICATIONLAYER_H_
 
 #include "hw/l3_DomainLayer.h"
 #include "hw/l4_InfrastructureLayer.h"
-#include <vector>
 #include <string>
-#include <tuple>
-#include <chrono>
+#include <vector>
 
 class IOutput
 {
 public:
     virtual ~IOutput() = default;
-    virtual void Output(std::string s) const = 0;
+    virtual void Output(const std::string& s) const = 0;
 };
 
-class Management1
+class Application
 {
 public:
-    explicit Management1(IRequestJournal& request_journal);
-    void registerRequest(const Ship& ship, bool is_emergency);
-    void work();
-    std::string getReport() const;
+    Application(const IOutput& out, RequestJournal1& journal);
+    bool performCommand(const std::vector<std::string>& args);
 private:
-    using PendingRequest = std::tuple<Ship, bool, std::chrono::system_clock::time_point>;
-    bool checkInvariant() const;
-    IRequestJournal& _request_journal;
-    std::vector<PendingRequest> _pending_requests;
+    bool add(const std::vector<std::string>& args);
+    bool work(const std::vector<std::string>& args);
+    bool view(const std::vector<std::string>& args);
+    bool clean(const std::vector<std::string>& args);
+    bool save(const std::vector<std::string>& args);
+    bool load(const std::vector<std::string>& args);
+    bool parseShip(const std::string& t, const std::string& s, Ship& ship);
+    bool error(const std::string& msg);
+
+    const IOutput& _out;
+    RequestJournal1& _journal;
+    std::vector<Ship> _pending_ships;
+    std::vector<bool> _pending_emergency;
+    std::vector<TimePoint> _pending_times;
 };
 
-#endif // L2_APPLICATIONLAYER_H
+#endif // HW_L2_APPLICATIONLAYER_H_

@@ -2,45 +2,40 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Iinclude --coverage
 LDFLAGS = --coverage
 
-SRC_DIR = src
-BUILD_DIR = build
-BIN_DIR = bin
-TEST_DIR = test
+SRC = src
+BUILD = build
+BIN = bin
+TEST = test
 
-SRCS = $(SRC_DIR)/l1_UserInterface.cpp \
-       $(SRC_DIR)/l2_ApplicationLayer.cpp \
-       $(SRC_DIR)/l3_DomainLayer.cpp \
-       $(SRC_DIR)/l4_InfrastructureLayer.cpp
+SRCS = $(SRC)/l1_UserInterface.cpp $(SRC)/l2_ApplicationLayer.cpp \
+       $(SRC)/l3_DomainLayer.cpp $(SRC)/l4_InfrastructureLayer.cpp
+OBJS = $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SRCS))
+DL_OBJS = $(BUILD)/l2_ApplicationLayer.o $(BUILD)/l3_DomainLayer.o $(BUILD)/l4_InfrastructureLayer.o
 
-OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
-
-TARGET = $(BIN_DIR)/airfield
+TARGET = $(BIN)/airfield
 
 .PHONY: all clean test
-
 all: $(TARGET)
 
-$(TARGET): $(OBJS) | $(BIN_DIR)
+$(TARGET): $(OBJS) | $(BIN)
 	$(CXX) $(LDFLAGS) -o $@ $^
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
+$(BUILD)/%.o: $(SRC)/%.cpp | $(BUILD)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+$(BIN):
+	mkdir -p $(BIN)
+$(BUILD):
+	mkdir -p $(BUILD)
 
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
-
-test: $(TEST_DIR)/test01 $(TEST_DIR)/test02
-	$(TEST_DIR)/test01
-	$(TEST_DIR)/test02
-
-$(TEST_DIR)/test01: $(TEST_DIR)/test01.cpp $(OBJS)
+$(TEST)/test01: $(TEST)/test01.cpp $(DL_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+$(TEST)/test02: $(TEST)/test02.cpp $(DL_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-$(TEST_DIR)/test02: $(TEST_DIR)/test02.cpp $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+test: $(TEST)/test01 $(TEST)/test02
+	$(TEST)/test01
+	$(TEST)/test02
 
 clean:
-	rm -rf $(BUILD_DIR) $(BIN_DIR) $(TEST_DIR)/test01 $(TEST_DIR)/test02
+	rm -rf $(BUILD) $(BIN) $(TEST)/test01 $(TEST)/test02 *.gcda *.gcno t1.data

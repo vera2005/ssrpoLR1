@@ -1,30 +1,13 @@
-#ifndef L3_DOMAINLAYER_H
-#define L3_DOMAINLAYER_H
+#ifndef HW_L3_DOMAINLAYER_H_
+#define HW_L3_DOMAINLAYER_H_
 
 #include <chrono>
-#include <string>
 
 using TimePoint = std::chrono::system_clock::time_point;
 
-enum class ShipType
-{
-    Passenger,
-    Cargo,
-    Military
-};
-
-enum class ShipSize
-{
-    Large,
-    Medium,
-    Small
-};
-
-enum class RequestStatus
-{
-    Approved,
-    Rejected
-};
+enum class ShipType { Passenger, Cargo, Military };
+enum class ShipSize { Large, Medium, Small };
+enum class RequestStatus { Approved, Rejected };
 
 class Ship
 {
@@ -41,12 +24,8 @@ private:
 class Request
 {
 public:
-    Request(
-        Ship ship,
-        TimePoint request_time,
-        TimePoint response_time,
-        RequestStatus status,
-        bool is_emergency);
+    Request(Ship ship, TimePoint request_time, TimePoint response_time,
+            RequestStatus status, bool is_emergency);
     const Ship& getShip() const;
     TimePoint getRequestTime() const;
     TimePoint getResponseTime() const;
@@ -61,6 +40,7 @@ private:
     bool _is_emergency;
 };
 
+/// Бизнес-правило допуска к посадке (вынесено из ДЗ в DL)
 bool checkCanLand(const Ship& ship, bool is_emergency);
 
-#endif // L3_DOMAINLAYER_H
+#endif // HW_L3_DOMAINLAYER_H_
